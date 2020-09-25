@@ -8,7 +8,7 @@ import { useRouter } from "next/router";
 const Index = ({ data: initialData, query: initialQuery }) => {
   const router = useRouter();
   const [query, setQuery] = React.useState(initialQuery.query ?? "");
-  let { data, mutate } = useSWR({}, fetchData, initialData);
+  let { data, mutate } = useSWR("/api/dummy", fetchData, initialData);
   useEffect(() => {
     let filteredData = [];
     console.log(initialQuery.query);
@@ -39,7 +39,7 @@ const Index = ({ data: initialData, query: initialQuery }) => {
           setQuery(value);
         }}
       />
-      {data.length > 0 ? (
+      {data && data.length > 0 ? (
         data.map((item) => (
           <Box
             mt={2}
