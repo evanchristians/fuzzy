@@ -30,8 +30,13 @@ const Index = ({ data: initialData, query: initialQuery }) => {
   return (
     <Wrapper bg="#282C34">
       <Input
+        fontSize={24}
+        height={60}
+        px={25}
+        mb={12}
         bg="black"
-        borderColor="grey"
+        borderColor="#282C34"
+        borderRadius={36}
         placeholder="search"
         color="white"
         onChange={async (event) => {
@@ -47,7 +52,7 @@ const Index = ({ data: initialData, query: initialQuery }) => {
             px={6}
             bg="#21252B"
             color="white"
-            borderRadius={8}
+            borderRadius={4}
             key={item.id}
             dangerouslySetInnerHTML={{ __html: item.title }}
           ></Box>

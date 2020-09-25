@@ -1,9 +1,18 @@
-import { Box } from "@chakra-ui/core"
+import { Box, Flex } from "@chakra-ui/core";
 
-export const Wrapper = ({children, bg}) => {
+export const Wrapper = ({ children, bg }) => {
   return (
-    <Box p={4} bg={bg} minHeight="100vh">
-      {children}
-    </Box>
-  )
-}
+    <Flex
+      p={12}
+      bg={bg}
+      minHeight="100vh"
+      w="100%"
+      justifyContent="center"
+      alignItems="center"
+    >
+      <Box maxWidth={1000} w="100%">
+        {children}
+      </Box>
+    </Flex>
+  );
+};
