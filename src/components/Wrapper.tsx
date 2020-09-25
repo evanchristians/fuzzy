@@ -8,7 +8,6 @@ export const Wrapper = ({ children, bg }) => {
       minHeight="100vh"
       w="100%"
       justifyContent="center"
-      alignItems="center"
     >
       <Box maxWidth={1000} w="100%">
         {children}
