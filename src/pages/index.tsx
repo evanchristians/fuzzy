@@ -1,23 +1,23 @@
 import { Wrapper } from "../components/Wrapper";
-import { Input, Box } from "@chakra-ui/core";
+import { Input, Tag } from "@chakra-ui/core";
 import React, { useEffect } from "react";
 import fetchData from "../lib/fetchData";
 import useSWR from "swr";
 import { useRouter } from "next/router";
+import Head from "next/head";
 
 const Index = ({ data: initialData, query: initialQuery }) => {
   const router = useRouter();
-  const [query, setQuery] = React.useState(initialQuery.query ?? "");
+  const [query, setQuery] = React.useState<string | undefined>(
+    initialQuery.query ?? ""
+  );
   let { data, mutate } = useSWR("/api/dummy", fetchData, initialData);
   useEffect(() => {
     let filteredData = [];
-    console.log(initialQuery.query);
-    initialData.filter((d) => {
-      if (query.length > 0 && d.title.includes(query) === true) {
-        console.log(d.title.includes(query));
+    initialData.filter((data) => {
+      if (query.length > 0 && data.title.includes(query) === true) {
         return filteredData.push({
-          ...d,
-          title: d.title.replace(query, query.bold()),
+          ...data,
         });
       }
       if (!query && filteredData.length === 0)
@@ -28,46 +28,60 @@ const Index = ({ data: initialData, query: initialQuery }) => {
   }, [query]);
 
   return (
-    <Wrapper bg="#282C34">
-      <Input
-        fontSize={24}
-        height={60}
-        px={25}
-        mb={12}
-        bg="black"
-        borderColor="#282C34"
-        borderRadius={36}
-        placeholder="search"
-        color="white"
-        onChange={async (event) => {
-          const value = event.target.value;
-          setQuery(value);
-        }}
-      />
-      {data && data.length > 0 ? (
-        data.map((item) => (
-          <Box
-            mt={2}
-            py={3}
-            px={6}
-            bg="#21252B"
-            color="white"
-            borderRadius={4}
-            key={item.id}
-            dangerouslySetInnerHTML={{ __html: item.title }}
-          ></Box>
-        ))
-      ) : (
-        <Box mt={2} py={3} px={6} bg="#21252B" color="white" borderRadius={8}>
-          No results
-        </Box>
-      )}
-    </Wrapper>
+    <>
+      <Head>
+        <link
+          href="https://fonts.googleapis.com/css2?family=Fira+Mono:wght@500;700&display=swap"
+          rel="stylesheet"
+        ></link>
+      </Head>
+      <Wrapper>
+        <Input
+          fontSize={18}
+          height={12}
+          mb={4}
+          variant={"flushed"}
+          value={query}
+          onChange={async (event) => {
+            const value = event.target.value;
+            setQuery(value);
+          }}
+        />
+        {data && data.length > 0 ? (
+          data.slice(0, 30).map((item) => {
+            return (
+              <Tag
+                size="sm"
+                mt={2}
+                mr={2}
+                variantColor={"blue"}
+                borderRadius={4}
+                key={item.id}
+                whiteSpace="pre"
+                dangerouslySetInnerHTML={{
+                  __html:
+                    query.length > 0
+                      ? item.title.replace(
+                          new RegExp(query, "gi"),
+                          (match) => `<b>${match}</b>`
+                        )
+                      : item.title,
+                }}
+              ></Tag>
+            );
+          })
+        ) : (
+          <Tag size="sm" mt={2} mr={2} variantColor={"blue"} borderRadius={4}>
+            no results
+          </Tag>
+        )}
+      </Wrapper>
+    </>
   );
 };
 
 export const getServerSideProps = async ({ query }) => {
-  const data = await fetchData("test");
+  const data = await fetchData();
   return { props: { data, query } };
 };
 export default Index;
